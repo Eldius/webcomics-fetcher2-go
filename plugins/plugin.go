@@ -18,12 +18,6 @@ type PluginEngine struct {
 	pluginFolder string
 }
 
-type PluginInfo struct {
-	Name        string `json:"name"`
-	Path        string `json:"path"`
-	Description string `json:"description"`
-}
-
 func NewPluginEngine() *PluginEngine {
 	return &PluginEngine{
 		pluginFolder: config.GetPluginsFolder(),

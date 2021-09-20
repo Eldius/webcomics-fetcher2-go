@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/viper"
 )
 
 func GetBinaryPath() string {
@@ -18,5 +20,5 @@ func GetBinaryPath() string {
 
 func GetPluginsFolder() string {
 	//return filepath.Join(GetBinaryPath(), "..", "plugins")
-	return "/home/eldius/dev/workspaces/go/webcomics-fetcher2-plugins/webcomics-fetcher2-oots/../plugins/"
+	return viper.GetString("webcomics.plugins.folder")
 }

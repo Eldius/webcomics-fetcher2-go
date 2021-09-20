@@ -18,6 +18,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+
+	"github.com/Eldius/webcomics-fetcher2-go/config"
 	"github.com/spf13/cobra"
 
 	"github.com/spf13/viper"
@@ -76,6 +79,8 @@ func initConfig() {
 		viper.SetConfigName(".webcomics-fetcher2-go")
 	}
 
+	viper.SetDefault("webcomics.plugins.folder", filepath.Join(config.GetBinaryPath(), "plugins"))
+	viper.BindEnv("webcomics.plugins.folder", "WEBCOMICS_FETCHER_PLUGIN_FOLDER")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
