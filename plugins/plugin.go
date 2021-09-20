@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"sync"
@@ -70,4 +71,12 @@ func execCmd(cmd *exec.Cmd, wg *sync.WaitGroup, c chan []byte) {
 	_ = cmd.Run()
 
 	c <- buf.Bytes()
+}
+
+func GetAbsolutePath() string {
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	return ex
 }
