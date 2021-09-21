@@ -1,7 +1,10 @@
 package plugins
 
+/*
+PluginInfo store plugin data
+*/
 type PluginInfo struct {
-	Name        string `json:"name"`
-	Path        string `json:"path"`
+	Name        string `storm:"id" json:"name"`
+	Path        string `storm:"unique" json:"path"`
 	Description string `json:"description"`
 }

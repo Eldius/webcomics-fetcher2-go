@@ -13,18 +13,44 @@ import (
 	"sync"
 
 	"github.com/Eldius/webcomics-fetcher2-go/config"
+	"github.com/Eldius/webcomics-fetcher2-go/repository"
+	"github.com/asdine/storm/v3"
 )
 
+/*
+PluginEngine handles plugins
+*/
 type PluginEngine struct {
 	pluginFolder string
+	db           *storm.DB
 }
 
+/*
+NewPluginEngine creates a new PluginEngine
+*/
 func NewPluginEngine() *PluginEngine {
 	return &PluginEngine{
 		pluginFolder: config.GetPluginsFolder(),
+		db:           repository.NewCustomDB("plugins"),
 	}
 }
 
+/*
+RefreshPluginList refreshes plugin database
+*/
+func (e *PluginEngine) RefreshPluginList() map[string]PluginInfo {
+	plugins := e.ListPlugins()
+	result := make(map[string]PluginInfo)
+	for _, p := range plugins {
+		result[p.Name] = p
+		e.db.Save(p)
+	}
+	return result
+}
+
+/*
+ListPlugins lists plugins in plugin folder
+*/
 func (e *PluginEngine) ListPlugins() []PluginInfo {
 	var result []PluginInfo
 	files, err := ioutil.ReadDir(e.pluginFolder)
@@ -36,7 +62,6 @@ func (e *PluginEngine) ListPlugins() []PluginInfo {
 	go fetchPluginsInfo(files, c)
 	for b := range c {
 		var p PluginInfo
-		fmt.Println(string(b))
 		err := json.Unmarshal(b, &p)
 		if err != nil {
 			fmt.Printf("Failed to parse plugin info: %s\n", err.Error())
@@ -60,10 +85,6 @@ func fetchPluginsInfo(files []fs.FileInfo, c chan []byte) {
 	close(c)
 }
 
-func (e *PluginEngine) RefreshPluginList() map[string]PluginInfo {
-	return make(map[string]PluginInfo)
-}
-
 func execCmd(cmd *exec.Cmd, wg *sync.WaitGroup, c chan []byte) {
 	defer wg.Done()
 	buf := new(bytes.Buffer)
@@ -73,6 +94,9 @@ func execCmd(cmd *exec.Cmd, wg *sync.WaitGroup, c chan []byte) {
 	c <- buf.Bytes()
 }
 
+/*
+GetAbsolutePath returns binary absolute path (to be used from plugins to return self location)
+*/
 func GetAbsolutePath() string {
 	ex, err := os.Executable()
 	if err != nil {
