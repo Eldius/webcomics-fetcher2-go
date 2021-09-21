@@ -27,7 +27,7 @@ webcomic refresh
 }
 
 func init() {
-	rootCmd.AddCommand(refreshCmd)
+	pluginCmd.AddCommand(refreshCmd)
 
 	// Here you will define your flags and configuration settings.
 

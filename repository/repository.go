@@ -46,10 +46,16 @@ func NewRepositoryWithDB(db *storm.DB) *WebcomicRepository {
 	}
 }
 
+/*
+NewDB returns the default DB for webcomics data
+*/
 func NewDB() *storm.DB {
 	return NewCustomDB("webcomics.db")
 }
 
+/*
+NewCustomDB returns a DB pointing to a custom db file
+*/
 func NewCustomDB(dbFile string) *storm.DB {
 	db, err := storm.Open(fmt.Sprintf("%s.db", dbFile))
 	if err != nil {
