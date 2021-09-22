@@ -13,7 +13,8 @@ type Webcomic struct {
 ComicStrip is a single image
 */
 type ComicStrip struct {
-	ID   int    `json:"id" storm:"id,increment"`
-	URL  string `json:"url" storm:"unique"`
-	Name string `json:"name"`
+	ID           int    `json:"id" storm:"id,increment"`
+	URL          string `json:"url" storm:"unique"`
+	Name         string `json:"name"`
+	WebcomicName string `json:"webcomic_name"`
 }

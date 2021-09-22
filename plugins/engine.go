@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"sync"
@@ -95,9 +96,10 @@ LoadPlugins lists plugins in plugin folder
 */
 func (e *PluginEngine) LoadPlugins() []*PluginInfo {
 	var result []*PluginInfo
+	fmt.Printf("Loading plugins from %s\n", e.pluginFolder)
 	files, err := ioutil.ReadDir(e.pluginFolder)
 	if err != nil {
-		log.Fatalf("Failed to list plugins in folder '%s': %s", e.pluginFolder, err.Error())
+		log.Fatalf("Failed to list plugin files in folder '%s': %s", e.pluginFolder, err.Error())
 	}
 
 	c := make(chan []byte)
@@ -117,10 +119,10 @@ func fetchPluginsInfo(files []fs.FileInfo, c chan []byte) {
 	var wg sync.WaitGroup
 	for _, f := range files {
 		if !f.IsDir() {
-
 			wg.Add(1)
-			cmd := exec.Command(filepath.Join(config.GetPluginsFolder(), f.Name()), "info")
-			go execCmdAsync(cmd, &wg, c)
+			//cmd := exec.Command(filepath.Join(config.GetPluginsFolder(), f.Name()), "info")
+			//go execCmdAsync(cmd, &wg, c)
+			go execCmdAsyncOutputToFile(&wg, c, filepath.Join(config.GetPluginsFolder(), f.Name()), "info")
 		}
 	}
 	wg.Wait()
@@ -136,6 +138,41 @@ func execCmd(cmd *exec.Cmd) ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
+}
+
+func execCmdOutputToFile(p string, scmd string, params ...string) ([]byte, error) {
+
+	o, clear := CreateOutputFile()
+	defer clear()
+
+	args := append([]string{scmd, "-o", o}, params...)
+	cmd := exec.Command(p, args...)
+	cmd.Stdout = os.Stdout
+	fmt.Println("Executing command:")
+	fmt.Println(cmd.String())
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Failed to get plugin info: %s\n", err.Error())
+		return make([]byte, 0), err
+	}
+
+	out, err := os.Open(o)
+	if err != nil {
+		fmt.Printf("Failed to open output file '%s': %s\n", o, err.Error())
+		return make([]byte, 0), err
+	}
+	return ioutil.ReadAll(out)
+}
+
+func execCmdAsyncOutputToFile(wg *sync.WaitGroup, c chan []byte, p string, scmd string, params ...string) {
+	defer wg.Done()
+
+	b, err := execCmdOutputToFile(p, scmd, params...)
+	if err != nil {
+		fmt.Printf("Failed to get plugin info from %s: %s\n", p, err.Error())
+		return
+	}
+
+	c <- b
 }
 
 func execCmdAsync(cmd *exec.Cmd, wg *sync.WaitGroup, c chan []byte) {

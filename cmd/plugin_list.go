@@ -8,7 +8,7 @@ import (
 )
 
 // listCmd represents the list command
-var listCmd = &cobra.Command{
+var listPluginsCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List registered plugins",
 	Long:  `List registered plugins.`,
@@ -16,13 +16,13 @@ var listCmd = &cobra.Command{
 		r := plugins.NewPluginEngine().ListRegisteredPlugins()
 		fmt.Println("Registered plugins:")
 		for _, v := range r {
-			fmt.Printf("- %s: %s\n", v.Name, v.Description)
+			fmt.Printf("- %s: %s (at %s)\n", v.Name, v.Description, v.Path)
 		}
 	},
 }
 
 func init() {
-	pluginCmd.AddCommand(listCmd)
+	pluginCmd.AddCommand(listPluginsCmd)
 
 	// Here you will define your flags and configuration settings.
 

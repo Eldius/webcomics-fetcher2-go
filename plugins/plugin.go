@@ -1,10 +1,8 @@
 package plugins
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"os/exec"
 
 	"github.com/Eldius/webcomics-fetcher2-go/comics"
 )
@@ -23,15 +21,12 @@ FetchStrips calls plugin fetch command
 */
 func (p *PluginInfo) FetchStrips() []*comics.ComicStrip {
 	result := make([]*comics.ComicStrip, 0)
-	cmd := exec.Command(p.Path, "fetch")
-	b, err := execCmd(cmd)
+
+	b, err := execCmdOutputToFile(p.Path, "fetch")
 	if err != nil {
-		log.Fatalf("Failed to fetch strips from %s: %s", p.Name, err.Error())
+		log.Fatalf("Failed to unmarshal plugin fetch response for '%s': %s\nresponse:\n%s\n---\n", p.Name, err.Error(), string(b))
 	}
 	fmt.Println(string(b))
-	if err := json.Unmarshal(b, &result); err != nil {
-		log.Fatalf("Failed to unmarshal plugin fetch response for '%s': %s\nresponse:\n%s", p.Name, err.Error(), string(b))
-	}
 
 	return result
 }

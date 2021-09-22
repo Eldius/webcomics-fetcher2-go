@@ -5,6 +5,7 @@ import (
 
 	"github.com/Eldius/webcomics-fetcher2-go/comics"
 	"github.com/asdine/storm/v3"
+	"github.com/asdine/storm/v3/q"
 )
 
 /*
@@ -26,6 +27,13 @@ SaveComicStrip saves a ComicStrip
 */
 func (r *WebcomicRepository) SaveComicStrip(s *comics.ComicStrip) {
 	r.db.Save(s)
+}
+
+/*
+SaveComicStrip saves a ComicStrip
+*/
+func (r *WebcomicRepository) ListComicStrip(name string) []*comics.ComicStrip {
+	r.db.Select(q.Eq("", name))
 }
 
 /*

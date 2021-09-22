@@ -5,5 +5,5 @@ refresh:
 list:
 	go run main.go plugin list
 
-fetch:
-	go run main.go fetch oots
+fetch-oots:
+	go run main.go strips fetch oots
