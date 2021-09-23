@@ -30,10 +30,12 @@ func (r *WebcomicRepository) SaveComicStrip(s *comics.ComicStrip) {
 }
 
 /*
-SaveComicStrip saves a ComicStrip
+ListComicStrip list ComicStrips by name
 */
-func (r *WebcomicRepository) ListComicStrip(name string) []*comics.ComicStrip {
-	r.db.Select(q.Eq("", name))
+func (r *WebcomicRepository) ListComicStrip(name string) ([]*comics.ComicStrip, error) {
+	var result []*comics.ComicStrip
+	err := r.db.Select(q.Eq("WebcomicName", name)).Find(&result)
+	return result, err
 }
 
 /*
