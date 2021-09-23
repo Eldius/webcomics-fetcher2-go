@@ -10,4 +10,4 @@ It's just a POC to test the use of plugins in a Go project...
 
 ### thoughts and decisions ###
 
-I tested the comunication trough
+- Tryied to use the stdout to pass data from plugin to main app, but it makes harder to show pregress to user (and to show debug data). The file approach looks easier to accomplish this task. An other possible change may be generate the file name and let plugin creat it (instead of create the temp file from main app and trunk file from plugin).

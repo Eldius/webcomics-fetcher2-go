@@ -81,14 +81,12 @@ func (e *PluginEngine) Fetch(name string) {
 
 	strips := p.FetchStrips()
 	for _, s := range strips {
-		fmt.Printf("- %s\n", s.Name)
+		fmt.Printf("- saving %s\n", s.Name)
 		_ = e.comicRepo.SaveComicStrip(s)
+
+		fmt.Printf("- Downloading %s\n", s.Name)
+		_, _ = s.Download()
 	}
-
-}
-
-func (e *PluginEngine) List(name string) {
-
 }
 
 /*

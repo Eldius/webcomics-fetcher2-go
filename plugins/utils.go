@@ -17,6 +17,9 @@ func GetAbsolutePath() string {
 	return ex
 }
 
+/*
+CreateOutputFile creates the output file and returns a function to clean up tem folder
+*/
 func CreateOutputFile() (string, func()) {
 	tmpDir, err := os.MkdirTemp("", "*")
 	if err != nil {
@@ -33,6 +36,10 @@ func CreateOutputFile() (string, func()) {
 	}
 }
 
+/*
+ToOutputFile writes object to file in a JSON format
+Created to be used from plugins to write its output to be read from main app
+*/
 func ToOutputFile(output string, obj interface{}) {
 	f, err := os.OpenFile(output, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
 	if err != nil {

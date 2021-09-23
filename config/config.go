@@ -18,10 +18,17 @@ func GetBinaryPath() string {
 	exePath := filepath.Dir(ex)
 	return exePath
 }
+
 /*
 GetPluginsFolder returns the plugins folder
 */
 func GetPluginsFolder() string {
-	//return filepath.Join(GetBinaryPath(), "..", "plugins")
 	return viper.GetString("webcomics.plugins.folder")
+}
+
+/*
+GetStripsFolder returns the strips base folder folder
+*/
+func GetStripsFolder() string {
+	return viper.GetString("webcomics.strips.folder")
 }

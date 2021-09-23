@@ -1,5 +1,10 @@
 package comics
 
+import (
+	"fmt"
+	"path/filepath"
+)
+
 /*
 Webcomic is the webcomic
 */
@@ -17,4 +22,22 @@ type ComicStrip struct {
 	URL          string `json:"url" storm:"unique"`
 	Name         string `json:"name"`
 	WebcomicName string `json:"webcomic_name"`
+	Order        int    `json:"order"`
+}
+
+/*
+RelativeFilename returns the strip relative file path
+*/
+func (s *ComicStrip) RelativeFilename() string {
+	return filepath.Join(s.WebcomicName, SanitizeFilename(s.Name)) + "." + FindFileExtensionFromURL(s.URL)
+}
+
+/*
+Download downloads strip image
+*/
+func (s *ComicStrip) Download() (string, error) {
+	relPath := s.RelativeFilename()
+	fmt.Println(relPath)
+	err := DownloadStrip(s.URL, relPath)
+	return relPath, err
 }

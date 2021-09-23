@@ -60,7 +60,9 @@ func initConfig() {
 	}
 
 	viper.SetDefault("webcomics.plugins.folder", filepath.Join(config.GetBinaryPath(), "plugins"))
+	viper.SetDefault("webcomics.strips.folder", filepath.Join(config.GetBinaryPath(), "strips"))
 	_ = viper.BindEnv("webcomics.plugins.folder", "WEBCOMICS_FETCHER_PLUGIN_FOLDER")
+	_ = viper.BindEnv("webcomics.strips.folder", "WEBCOMICS_FETCHER_STRIPS_FOLDER")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
