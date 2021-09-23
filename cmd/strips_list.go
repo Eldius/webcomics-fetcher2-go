@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/Eldius/webcomics-fetcher2-go/repository"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +26,7 @@ import (
 var listStripsCmd = &cobra.Command{
 	Use:   "list",
 	Short: "A brief description of your command",
+	Args:  cobra.ExactArgs(1),
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -32,12 +34,19 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		result, err := repository.NewRepository().ListComicStrip(args[0])
+		if err != nil {
+			fmt.Printf("Failed to fetch strips: %s\n", err.Error())
+		}
+
+		for _, s := range result {
+			fmt.Println(s.Name)
+		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(listStripsCmd)
+	stripsCmd.AddCommand(listStripsCmd)
 
 	// Here you will define your flags and configuration settings.
 
