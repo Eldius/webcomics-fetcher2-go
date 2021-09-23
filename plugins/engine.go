@@ -1,7 +1,6 @@
 package plugins
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -32,7 +31,7 @@ NewPluginEngine creates a new PluginEngine
 */
 func NewPluginEngine() *PluginEngine {
 	db := repository.NewCustomDB("plugins")
-	db.Init(&PluginEngine{})
+	_ = db.Init(&PluginEngine{})
 	return &PluginEngine{
 		pluginFolder: config.GetPluginsFolder(),
 		db:           db,
@@ -55,7 +54,7 @@ func (e *PluginEngine) RefreshPluginList() map[string]*PluginInfo {
 			fmt.Printf("Failed to register plugin '%s': %s\n", p.Name, err.Error())
 		}
 	}
-	e.db.Select(q.Not(q.In("Name", keys))).Delete(new(PluginInfo))
+	_ = e.db.Select(q.Not(q.In("Name", keys))).Delete(new(PluginInfo))
 	return result
 }
 
@@ -82,7 +81,8 @@ func (e *PluginEngine) Fetch(name string) {
 
 	strips := p.FetchStrips()
 	for _, s := range strips {
-		e.comicRepo.SaveComicStrip(s)
+		fmt.Printf("- %s\n", s.Name)
+		_ = e.comicRepo.SaveComicStrip(s)
 	}
 
 }
@@ -120,24 +120,11 @@ func fetchPluginsInfo(files []fs.FileInfo, c chan []byte) {
 	for _, f := range files {
 		if !f.IsDir() {
 			wg.Add(1)
-			//cmd := exec.Command(filepath.Join(config.GetPluginsFolder(), f.Name()), "info")
-			//go execCmdAsync(cmd, &wg, c)
 			go execCmdAsyncOutputToFile(&wg, c, filepath.Join(config.GetPluginsFolder(), f.Name()), "info")
 		}
 	}
 	wg.Wait()
 	close(c)
-}
-
-func execCmd(cmd *exec.Cmd) ([]byte, error) {
-	buf := new(bytes.Buffer)
-	cmd.Stdout = buf
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("Failed to get plugin info: %s\n", err.Error())
-		return buf.Bytes(), err
-	}
-
-	return buf.Bytes(), nil
 }
 
 func execCmdOutputToFile(p string, scmd string, params ...string) ([]byte, error) {
@@ -169,17 +156,6 @@ func execCmdAsyncOutputToFile(wg *sync.WaitGroup, c chan []byte, p string, scmd 
 	b, err := execCmdOutputToFile(p, scmd, params...)
 	if err != nil {
 		fmt.Printf("Failed to get plugin info from %s: %s\n", p, err.Error())
-		return
-	}
-
-	c <- b
-}
-
-func execCmdAsync(cmd *exec.Cmd, wg *sync.WaitGroup, c chan []byte) {
-	defer wg.Done()
-	b, err := execCmd(cmd)
-	if err != nil {
-		fmt.Printf("Failed to get plugin info: %s\n", err.Error())
 		return
 	}
 

@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 
 	"github.com/Eldius/webcomics-fetcher2-go/comics"
@@ -26,7 +26,10 @@ func (p *PluginInfo) FetchStrips() []*comics.ComicStrip {
 	if err != nil {
 		log.Fatalf("Failed to unmarshal plugin fetch response for '%s': %s\nresponse:\n%s\n---\n", p.Name, err.Error(), string(b))
 	}
-	fmt.Println(string(b))
+	//fmt.Println(string(b))
+	if err := json.Unmarshal(b, &result); err != nil {
+		log.Fatalf("Failed to parse plugin response: %s", err.Error())
+	}
 
 	return result
 }

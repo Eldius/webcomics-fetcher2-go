@@ -18,15 +18,15 @@ type WebcomicRepository struct {
 /*
 SaveComic saves a new comic data
 */
-func (r *WebcomicRepository) SaveComic(c *comics.Webcomic) {
-	r.db.Save(c)
+func (r *WebcomicRepository) SaveComic(c *comics.Webcomic) error {
+	return r.db.Save(c)
 }
 
 /*
 SaveComicStrip saves a ComicStrip
 */
-func (r *WebcomicRepository) SaveComicStrip(s *comics.ComicStrip) {
-	r.db.Save(s)
+func (r *WebcomicRepository) SaveComicStrip(s *comics.ComicStrip) error {
+	return r.db.Save(s)
 }
 
 /*
@@ -35,6 +35,15 @@ ListComicStrip list ComicStrips by name
 func (r *WebcomicRepository) ListComicStrip(name string) ([]*comics.ComicStrip, error) {
 	var result []*comics.ComicStrip
 	err := r.db.Select(q.Eq("WebcomicName", name)).Find(&result)
+	return result, err
+}
+
+/*
+ListAllComicStrip list ComicStrips by name
+*/
+func (r *WebcomicRepository) ListAllComicStrip() ([]*comics.ComicStrip, error) {
+	var result []*comics.ComicStrip
+	err := r.db.All(&result)
 	return result, err
 }
 

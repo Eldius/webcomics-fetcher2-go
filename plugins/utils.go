@@ -38,5 +38,5 @@ func ToOutputFile(output string, obj interface{}) {
 	if err != nil {
 		log.Fatalf("Failed to write output to file (%s): %s", output, err.Error())
 	}
-	json.NewEncoder(f).Encode(obj)
+	_ = json.NewEncoder(f).Encode(obj)
 }
