@@ -71,7 +71,7 @@ NewCustomDB returns a DB pointing to a custom db file
 func NewCustomDB(dbFile string) *storm.DB {
 	db, err := storm.Open(fmt.Sprintf("%s.db", dbFile))
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	return db
 }

@@ -17,7 +17,7 @@ webcomic fetch <plugin-name>
 
 `,
 	Run: func(_ *cobra.Command, args []string) {
-		plugins.NewPluginEngine().Fetch(args[0])
+		plugins.NewPluginEngine().FetchStrips(args[0])
 	},
 }
 

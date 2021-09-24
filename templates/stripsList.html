@@ -1,0 +1,15 @@
+<html>
+<header>
+    <title>Webcomics</title>
+</header>
+
+<body>
+    <h1>{{ .Name }}</h1>
+    <ul>
+        {{range .Strips}}
+        <li><a href="/strips/img/{{ .FileName }}">{{ .Name }}</a></li>
+        {{end}}
+    </ul>
+</body>
+
+</html>

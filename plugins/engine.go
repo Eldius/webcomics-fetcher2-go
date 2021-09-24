@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/Eldius/webcomics-fetcher2-go/comics"
 	"github.com/Eldius/webcomics-fetcher2-go/config"
 	"github.com/Eldius/webcomics-fetcher2-go/repository"
 	"github.com/asdine/storm/v3"
@@ -70,9 +71,9 @@ func (e *PluginEngine) ListRegisteredPlugins() []PluginInfo {
 }
 
 /*
-Fetch fetches
+FetchStrips fetches
 */
-func (e *PluginEngine) Fetch(name string) {
+func (e *PluginEngine) FetchStrips(name string) {
 	var p PluginInfo
 	if err := e.db.Select(q.Eq("Name", name)).First(&p); err != nil {
 		fmt.Printf("Could not find plugin '%s': %s", name, err.Error())
@@ -87,6 +88,13 @@ func (e *PluginEngine) Fetch(name string) {
 		fmt.Printf("- Downloading %s\n", s.Name)
 		_, _ = s.Download()
 	}
+}
+
+/*
+ListStrips list all strip info from database
+*/
+func (e *PluginEngine) ListStrips(name string) ([]*comics.ComicStrip, error) {
+	return e.comicRepo.ListComicStrip(name)
 }
 
 /*

@@ -21,3 +21,7 @@ list-oots:
 
 lint:
 	golangci-lint run && revive -formatter friendly ./...
+
+
+start:
+	go run main.go start
