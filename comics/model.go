@@ -23,6 +23,7 @@ type ComicStrip struct {
 	Name         string `json:"name"`
 	WebcomicName string `json:"webcomic_name"`
 	Order        int    `json:"order"`
+	FileName     string `json:"file_name"`
 }
 
 /*
