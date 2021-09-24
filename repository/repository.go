@@ -34,7 +34,7 @@ ListComicStrip list ComicStrips by name
 */
 func (r *WebcomicRepository) ListComicStrip(name string) ([]*comics.ComicStrip, error) {
 	var result []*comics.ComicStrip
-	err := r.db.Select(q.Eq("WebcomicName", name)).Find(&result)
+	err := r.db.Select(q.Eq("WebcomicName", name)).OrderBy("Order").Find(&result)
 	return result, err
 }
 
@@ -52,7 +52,7 @@ NewRepository creates a new repository
 */
 func NewRepository() *WebcomicRepository {
 	return &WebcomicRepository{
-		db: NewDB(),
+		db: NewCustomDB("webcomics"),
 	}
 }
 
@@ -63,13 +63,6 @@ func NewRepositoryWithDB(db *storm.DB) *WebcomicRepository {
 	return &WebcomicRepository{
 		db: db,
 	}
-}
-
-/*
-NewDB returns the default DB for webcomics data
-*/
-func NewDB() *storm.DB {
-	return NewCustomDB("webcomics.db")
 }
 
 /*

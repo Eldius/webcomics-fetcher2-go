@@ -2,7 +2,6 @@ package comics
 
 import (
 	"fmt"
-	"path/filepath"
 )
 
 /*
@@ -30,7 +29,7 @@ type ComicStrip struct {
 RelativeFilename returns the strip relative file path
 */
 func (s *ComicStrip) RelativeFilename() string {
-	return filepath.Join(s.WebcomicName, SanitizeFilename(s.Name)) + "." + FindFileExtensionFromURL(s.URL)
+	return s.FileName
 }
 
 /*

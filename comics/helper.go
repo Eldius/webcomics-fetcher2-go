@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/Eldius/webcomics-fetcher2-go/config"
 )
@@ -50,14 +49,6 @@ func SanitizeFilename(filename string) string {
 		log.Fatal(err)
 	}
 	return reg.ReplaceAllString(filename, "_")
-}
-
-/*
-FindFileExtensionFromURL finds image extension from URL
-*/
-func FindFileExtensionFromURL(url string) string {
-	tmp := strings.Split(url, ".")
-	return tmp[len(tmp)-1]
 }
 
 func createFolder(f string) error {
